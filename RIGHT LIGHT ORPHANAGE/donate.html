@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Donate — Right Light Gospel Orphanage</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Feather Icons -->
+    <script src="https://unpkg.com/feather-icons"></script>
+
+    <!-- Paystack (inline) -->
+    <script src="https://js.paystack.co/v1/inline.js"></script>
+
+    <style>
+      :root{ --brand-blue:#1f3342; --brand-gold:#ffd700; --brand-green:#83cd2d; --bg:#f7fafc }
+      html,body{height:100%}
+      body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--brand-blue);margin:0}
+      .site-container{max-width:1180px;margin:0 auto;padding:0 1rem}
+      header.site-header{background:white;box-shadow:0 4px 18px rgba(8,15,22,0.06);position:sticky;top:0;z-index:40}
+      .hero{background:linear-gradient(180deg, rgba(31,51,66,0.95), rgba(31,51,66,0.85)), url('images/r1.jpg') center/cover no-repeat;color:white;padding:3.5rem 0;border-bottom-left-radius:18px;border-bottom-right-radius:18px}
+      .kicker{background:rgba(255,255,255,0.08);padding:.25rem .6rem;border-radius:999px;color:var(--brand-gold);font-weight:600}
+      .main-grid{display:grid;grid-template-columns:1fr 420px;gap:2.25rem;padding:1.75rem 0}
+      @media (max-width:980px){.main-grid{grid-template-columns:1fr}.sticky-card{position:static!important;width:auto}}
+      .tier-card{border-radius:12px;background:white;padding:1.25rem;box-shadow:0 8px 30px rgba(31,51,66,0.06)}
+      .donation-card{background:white;border-radius:14px;padding:1.25rem;box-shadow:0 12px 40px rgba(31,51,66,0.08)}
+      .amt-btn{display:inline-flex;align-items:center;justify-content:center;padding:.85rem 1.1rem;border-radius:10px;border:1px solid #e6e6e6;background:white;font-weight:700;cursor:pointer}
+      .amt-btn.active{background:linear-gradient(90deg,var(--brand-gold),#ffeb3b);color:var(--brand-blue);box-shadow:0 6px 18px rgba(255,215,0,0.14);transform:translateY(-2px)}
+      .form-control{width:100%;padding:.9rem 1rem;border-radius:10px;border:1px solid #e9ecef;background:#fff}
+      .form-label{font-weight:600;margin-bottom:.5rem;display:block}
+      .muted{color:#6b7280}
+      .btn-primary{background:var(--brand-gold);color:var(--brand-blue);font-weight:700;padding:.9rem 1.1rem;border-radius:999px;border:none}
+      .focus-ring:focus{outline:3px solid rgba(255,215,0,0.18);outline-offset:3px}
+      .stat{background:white;padding:1rem;border-radius:12px;box-shadow:0 8px 26px rgba(31,51,66,0.04)}
+      .hidden{display:none}
+    </style>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="site-container flex items-center justify-between py-4">
+        <a href="index.html" class="flex items-center gap-3">
+          <img src="images/rlglogo.png" alt="Right Light Logo" class="h-10" onerror="this.onerror=null;this.src='https://placehold.co/160x40/cccccc/333333?text=Logo'">
+        </a>
+        <nav class="hidden md:flex items-center gap-6">
+          <a href="index.html" class="nav-item">Home</a>
+          <a href="index.html#about" class="nav-item">About</a>
+          <a href="index.html#stories" class="nav-item">Stories</a>
+          <a href="index.html#contact" class="nav-item">Contact</a>
+          <a href="gallery.html" class="nav-item">Gallery</a>
+        </nav>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="site-container">
+        <div class="max-w-3xl">
+          <span class="kicker">Support Our Orphanage</span>
+          <h1 class="mt-4 text-3xl md:text-4xl font-extrabold">Help provide safety, education and care for children in need</h1>
+          <p class="mt-4 muted">Your donation gives children essentials like food, school supplies, and healthcare. Choose a one-time gift or become a monthly supporter.</p>
+        </div>
+      </div>
+    </section>
+
+    <main class="site-container">
+      <div class="main-grid">
+        <div>
+          <!-- Warning shown when page is opened via file:// which Paystack blocks -->
+          <div id="serveWarning" class="hidden mb-4 p-3 rounded text-sm bg-yellow-50 text-yellow-800" role="status"></div>
+          <div class="mb-6">
+            <h2 class="text-2xl font-bold">Choose an amount</h2>
+            <p class="muted mt-1">Pick a recommended amount or enter a custom value — payments via PayStack.</p>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-4 mb-6">
+            <div class="tier-card">
+              <div class="flex items-start justify-between">
+                <div class="flex items-center gap-3">
+                  <i data-feather="coffee" class="text-yellow-400"></i>
+                  <div>
+                    <h3 class="text-lg font-bold">₦5,000</h3>
+                    <p class="muted text-sm mt-1">Feeds a child for a week</p>
+                  </div>
+                </div>
+              </div>
+              <p class="mt-3 muted text-sm">Nutritious meals, daily essentials and care.</p>
+              <div class="mt-4">
+                <button class="amt-btn w-full select-amt" data-amount="5000">Select ₦5,000</button>
+              </div>
+            </div>
+
+            <div class="tier-card">
+              <div class="flex items-start justify-between">
+                <div class="flex items-center gap-3">
+                  <i data-feather="book" class="text-indigo-500"></i>
+                  <div>
+                    <h3 class="text-lg font-bold">₦10,000</h3>
+                    <p class="muted text-sm mt-1">Education support for a month</p>
+                  </div>
+                </div>
+              </div>
+              <p class="mt-3 muted text-sm">School fees, books, and school supplies.</p>
+              <div class="mt-4">
+                <button class="amt-btn w-full select-amt" data-amount="10000">Select ₦10,000</button>
+              </div>
+            </div>
+
+            <div class="tier-card">
+              <div class="flex items-start justify-between">
+                <div class="flex items-center gap-3">
+                  <i data-feather="heart" class="text-pink-500"></i>
+                  <div>
+                    <h3 class="text-lg font-bold">₦25,000</h3>
+                    <p class="muted text-sm mt-1">Comprehensive care</p>
+                  </div>
+                </div>
+              </div>
+              <p class="mt-3 muted text-sm">Healthcare, nutrition and educational support.</p>
+              <div class="mt-4">
+                <button class="amt-btn w-full select-amt" data-amount="25000">Select ₦25,000</button>
+              </div>
+            </div>
+
+            <div class="tier-card">
+              <div class="flex items-start justify-between">
+                <div>
+                  <h3 class="text-lg font-bold">Custom</h3>
+                  <p class="muted text-sm mt-1">Enter any amount</p>
+                </div>
+              </div>
+              <div class="mt-3">
+                <label for="left-custom" class="form-label">Custom amount (NGN)</label>
+                <input id="left-custom" class="form-control" type="number" min="100" placeholder="₦ 50,000">
+              </div>
+              <div class="mt-4">
+                <button class="amt-btn w-full select-custom">Use custom amount</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <aside class="sticky-card" style="position:sticky;top:96px">
+          <div class="donation-card">
+            <div class="flex items-start justify-between mb-4">
+              <div>
+                <h3 class="text-xl font-bold">Donate to Right Light</h3>
+                <p class="muted text-sm">Secure, fast, and transparent</p>
+              </div>
+              <div class="text-sm muted">NGN</div>
+            </div>
+
+            <!-- Quick donate presets to reduce friction -->
+            <div class="mb-4">
+              <div class="text-sm font-semibold mb-2">Quick donate</div>
+              <div class="flex gap-2">
+                <button class="amt-btn quick-amt" data-amount="5000">₦5k</button>
+                <button class="amt-btn quick-amt" data-amount="10000">₦10k</button>
+                <button class="amt-btn quick-amt" data-amount="25000">₦25k</button>
+                <button class="amt-btn quick-amt" data-amount="0">Other</button>
+              </div>
+            </div>
+
+            <form id="donationForm" novalidate>
+              <div id="formError" class="hidden mb-4 p-3 rounded text-sm bg-red-50 text-red-700" role="alert" aria-live="polite"></div>
+
+              <div class="mb-3">
+                <label class="form-label">Selected amount</label>
+                <div id="selectedAmountDisplay" class="text-2xl font-extrabold">₦5,000</div>
+              </div>
+
+              <div class="mb-3 form-group">
+                <label for="amountInput" class="form-label">Amount (NGN)</label>
+                <input id="amountInput" name="amount" class="form-control focus-ring" type="number" min="100" value="5000" aria-describedby="error-amount">
+                <p id="error-amount" class="error-msg text-sm text-red-600 hidden" aria-live="assertive"></p>
+              </div>
+
+              <div class="mb-3 form-group">
+                <label for="donorName" class="form-label">Full name</label>
+                <input id="donorName" name="name" class="form-control" type="text" aria-describedby="error-name">
+                <p id="error-name" class="error-msg text-sm text-red-600 hidden" aria-live="assertive"></p>
+              </div>
+
+              <div class="mb-3 form-group">
+                <label for="donorEmail" class="form-label">Email</label>
+                <input id="donorEmail" name="email" class="form-control" type="email" aria-describedby="error-email">
+                <p id="error-email" class="error-msg text-sm text-red-600 hidden" aria-live="assertive"></p>
+              </div>
+
+              <div class="mb-3 form-group">
+                <label for="donorPhone" class="form-label">Phone (optional)</label>
+                <input id="donorPhone" name="phone" class="form-control" type="tel" placeholder="+234 80..." aria-describedby="error-phone">
+                <p id="error-phone" class="error-msg text-sm text-red-600 hidden" aria-live="assertive"></p>
+              </div>
+
+              <div class="mb-4">
+                <label class="form-label">Donation frequency</label>
+                <div class="flex gap-2">
+                  <button type="button" id="oneOff" class="amt-btn active">One-time</button>
+                  <button type="button" id="monthly" class="amt-btn">Monthly</button>
+                </div>
+              </div>
+
+              <button id="payBtn" type="submit" class="btn-primary w-full focus-ring">Donate Now</button>
+
+              <div class="mt-4 text-xs muted text-center">Payments are handled securely by PayStack.</div>
+            </form>
+
+            <div id="donationSuccess" class="hidden mt-6 text-center">
+              <div class="text-brand-green font-bold">Thank you — donation received!</div>
+              <div class="muted text-sm mt-2">A receipt will be emailed to you.</div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="mt-8 py-8 bg-white">
+      <div class="site-container flex flex-col md:flex-row justify-between items-center gap-4">
+        <div class="text-sm muted">© <span id="year"></span> Right Light Gospel Orphanage</div>
+        <div class="flex items-center gap-4">
+          <a href="index.html#contact" class="muted">Contact</a>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function(){
+        try{ if(window.feather) feather.replace(); }catch(e){}
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // If the page is opened via file:// Paystack will reject the key — warn the user
+        try{
+          const serveWarning = document.getElementById('serveWarning');
+          if(window.location && window.location.protocol === 'file:'){
+            if(serveWarning){
+              serveWarning.textContent = 'You opened this page directly from the file system (file://). Paystack blocks transactions from file:// origins. Please serve the site over HTTP (for example: run "python -m http.server" in the folder and open http://localhost:8000/donate-new.html).';
+              serveWarning.classList.remove('hidden');
+            }
+            // disable pay button to avoid confusing 400 errors
+            const pb = document.getElementById('payBtn'); if(pb) pb.disabled = true;
+          }
+        }catch(e){}
+
+  // Elements
+  const selectAmtBtns = document.querySelectorAll('.select-amt');
+        const leftCustom = document.getElementById('left-custom');
+        const selectCustomBtn = document.querySelector('.select-custom');
+        const amountInput = document.getElementById('amountInput');
+        const selectedDisplay = document.getElementById('selectedAmountDisplay');
+        const amtBtns = document.querySelectorAll('.amt-btn');
+  const quickBtns = document.querySelectorAll('.quick-amt');
+
+        function clearActive(){ amtBtns.forEach(b=>b.classList.remove('active')); }
+        function setAmount(val){ amountInput.value = Math.max(100, Math.round(val)); selectedDisplay.textContent = '₦' + Number(amountInput.value).toLocaleString(); }
+
+        // initial amount
+        setAmount(5000);
+
+        // tier buttons
+        selectAmtBtns.forEach(btn=>{
+          btn.addEventListener('click', ()=>{
+            clearActive(); btn.classList.add('active');
+            const a = parseInt(btn.dataset.amount,10)||0; setAmount(a);
+          });
+        });
+
+        // quick donate buttons in the donation card (reduce friction)
+        quickBtns.forEach(btn=>{
+          btn.addEventListener('click', ()=>{
+            const a = parseInt(btn.dataset.amount,10)||0;
+            // clear other active states
+            clearActive();
+            // mark the clicked quick button active
+            btn.classList.add('active');
+            if(a === 0){ // 'Other' selected -> focus custom amount
+              amountInput.value = '';
+              selectedDisplay.textContent = '₦ —';
+              amountInput.focus();
+            }else{
+              setAmount(a);
+            }
+          });
+        });
+
+        // custom left
+        if(selectCustomBtn){
+          selectCustomBtn.addEventListener('click', ()=>{
+            const v = parseInt(leftCustom.value,10);
+            if(!v || v < 100){alert('Enter a custom amount of at least ₦100'); return}
+            clearActive(); selectCustomBtn.classList.add('active'); setAmount(v);
+          });
+        }
+
+        // sync manual amount changes
+        amountInput.addEventListener('input', ()=>{
+          clearActive(); const v = parseInt(amountInput.value,10)||0; if(v>0) selectedDisplay.textContent = '₦' + v.toLocaleString();
+        });
+
+        // frequency
+        const oneOffBtn = document.getElementById('oneOff');
+        const monthlyBtn = document.getElementById('monthly');
+        let recurring = false;
+        oneOffBtn.addEventListener('click', ()=>{ monthlyBtn.classList.remove('active'); oneOffBtn.classList.add('active'); recurring=false; });
+        monthlyBtn.addEventListener('click', ()=>{ oneOffBtn.classList.remove('active'); monthlyBtn.classList.add('active'); recurring=true; });
+
+        // PayStack integration
+        const donationForm = document.getElementById('donationForm');
+        const payBtn = document.getElementById('payBtn');
+        const successBox = document.getElementById('donationSuccess');
+
+        donationForm.addEventListener('submit', function(e){
+          e.preventDefault();
+
+          // basic validation
+          const amount = Math.max(100, Math.round(parseInt(amountInput.value,10)||0));
+          const name = (document.getElementById('donorName')||{}).value?.trim();
+          const email = (document.getElementById('donorEmail')||{}).value?.trim();
+
+                // custom validation (show inline messages instead of alerts)
+                clearAllErrors();
+                const errors = [];
+                if(!amount || amount < 100){ errors.push({field: 'amount', msg: 'Enter an amount of at least ₦100'}); }
+                if(!name){ errors.push({field: 'name', msg: 'Please enter your full name'}); }
+                if(!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ errors.push({field: 'email', msg: 'Please enter a valid email address'}); }
+
+                if(errors.length){
+                  // show first inline error and banner
+                  const first = errors[0];
+                  errors.forEach(e=> showFieldError(e.field, e.msg));
+                  showFormError(errors.map(e=>e.msg).join(' — '));
+                  // focus first invalid field
+                  const focusMap = { amount: amountInput, name: document.getElementById('donorName'), email: document.getElementById('donorEmail'), phone: document.getElementById('donorPhone') };
+                  try{ focusMap[first.field]?.focus(); }catch(e){}
+                  return;
+                }
+
+                // disable button
+                payBtn.disabled = true; payBtn.textContent = 'Processing...';
+
+                try{
+                  if(window.PaystackPop && typeof PaystackPop.setup === 'function'){
+                    const handler = PaystackPop.setup({
+                      key: 'pk_live_2250fb00b39d85b111cbdac43465c2fc20f53e36',
+                      email: email,
+                      amount: amount * 100, // kobo
+                      currency: 'NGN',
+                      ref: 'rl_' + Math.floor((Math.random() * 1000000000) + 1),
+                      metadata: { custom_fields: [ { display_name: 'Donor', variable_name: 'donor_name', value: name } ] },
+                      onClose: function(){ payBtn.disabled=false; payBtn.textContent='Donate Now'; showFormError('Payment window closed.'); },
+                      callback: function(response){
+                        donationForm.style.display='none'; successBox.classList.remove('hidden');
+                        console.log('Payment complete. Reference: ' + response.reference);
+                      }
+                    });
+                    handler.openIframe();
+                  }else{
+                    showFormError('Payment provider not available. Please try again later.');
+                    payBtn.disabled=false; payBtn.textContent='Donate Now';
+                  }
+                }catch(err){
+                  console.error(err); showFormError('An error occurred starting payment.'); payBtn.disabled=false; payBtn.textContent='Donate Now';
+                }
+        });
+
+        // accessibility: keyboard activation for selection controls
+        document.querySelectorAll('.select-amt, .select-custom').forEach(el=>{ el.setAttribute('tabindex','0'); el.addEventListener('keydown', e=>{ if(e.key==='Enter' || e.key===' ') e.preventDefault(), el.click(); }); });
+        
+        // Inline error helpers
+        function showFieldError(field, msg){
+          const map = { amount: 'error-amount', name: 'error-name', email: 'error-email', phone: 'error-phone' };
+          const id = map[field];
+          if(!id) return;
+          const el = document.getElementById(id);
+          if(el){ el.textContent = msg; el.classList.remove('hidden'); }
+        }
+        function clearFieldError(field){
+          const map = { amount: 'error-amount', name: 'error-name', email: 'error-email', phone: 'error-phone' };
+          const id = map[field]; if(!id) return; const el = document.getElementById(id); if(el){ el.textContent=''; el.classList.add('hidden'); }
+        }
+        function clearAllErrors(){ document.querySelectorAll('.error-msg').forEach(e=>{ e.textContent=''; e.classList.add('hidden'); }); const banner = document.getElementById('formError'); if(banner){ banner.textContent=''; banner.classList.add('hidden'); } }
+        function showFormError(msg){ const banner = document.getElementById('formError'); if(banner){ banner.textContent = msg; banner.classList.remove('hidden'); banner.focus(); } }
+      });
+    </script>
+  </body>
+</html>

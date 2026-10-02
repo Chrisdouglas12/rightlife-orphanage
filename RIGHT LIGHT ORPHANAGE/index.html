@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Right Light Gospel Orphanage - Nurturing Hope, Building Futures</title>
+    
+    <!-- Tailwind CSS & Google Fonts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Feather Icons -->
+    <script src="https://unpkg.com/feather-icons"></script>
+
+    <style>
+        :root {
+            --brand-blue: #1f3342;
+            --brand-gold: #ffd700;
+            --brand-green: #83cd2d;
+            --brand-white: #ffffff;
+            --brand-light-gray: #f7fafc;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--brand-light-gray);
+            color: var(--brand-blue);
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(131, 205, 45, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 15px rgba(131, 205, 45, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(131, 205, 45, 0); }
+        }
+        
+        /* --- Navbar Styling --- */
+        .nav-item { position: relative; transition: color 0.3s ease; }
+        .nav-item::after {
+            content: ''; position: absolute; width: 0; height: 2px;
+            bottom: -6px; left: 50%; transform: translateX(-50%);
+            background-color: var(--brand-gold);
+            transition: width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        .nav-item:hover::after, .nav-item.active::after { width: 100%; }
+        .nav-item:hover, .nav-item.active { color: var(--brand-gold); }
+        .nav-scrolled {
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+        }
+        
+        .hero-slide, .testimonial-slide { display: none; }
+        .hero-slide.active, .testimonial-slide.active { display: block; animation: fadeIn 1.5s ease-in-out; }
+        .hero-slide .slide-content { animation: fadeInUp 1.2s ease-out 0.3s; animation-fill-mode: both; }
+        .reveal {
+            opacity: 0; transform: translateY(40px);
+            transition: opacity 0.8s cubic-bezier(0.165, 0.84, 0.44, 1), transform 0.8s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+        
+        /* --- Card Enhancements --- */
+        .impact-card, .story-card, .faq-item {
+            transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), box-shadow 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+        .impact-card:hover, .story-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+        }
+        .impact-card .icon-container { transition: transform 0.4s ease, background-color 0.4s ease; }
+        .impact-card:hover .icon-container { transform: rotateY(180deg); background-color: var(--brand-gold); color: var(--brand-blue); }
+        .story-card img { transition: transform 0.4s ease; }
+        .story-card:hover img { transform: scale(1.05); }
+
+        /* --- FAQ Accordion --- */
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), padding 0.5s ease;
+            padding-top: 0; padding-bottom: 0;
+            opacity: 0;
+        }
+        .faq-item.open .faq-answer {
+            max-height: none; /* Remove fixed height constraint */
+            padding-top: 1rem; padding-bottom: 1rem;
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+        .faq-item.open .faq-icon { transform: rotate(45deg); }
+        .faq-icon { transition: transform 0.3s ease; }
+
+        /* --- Floating Buttons --- */
+        .whatsapp-fab {
+            animation: pulse 2s infinite;
+        }
+        .back-to-top {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* --- Color Helpers --- */
+        .text-brand-gold { color: var(--brand-gold); }
+        .bg-brand-gold { background-color: var(--brand-gold); }
+        .hover\:bg-brand-gold-dark:hover { background-color: #e6c300; }
+        .text-brand-green { color: var(--brand-green); }
+        .bg-brand-green { background-color: var(--brand-green); }
+        .bg-brand-blue { background-color: var(--brand-blue); }
+        
+        .testimonial-slider-container { overflow: hidden; }
+        /* --- Video embed responsive wrapper (16:9) --- */
+        .video-wrapper { position: relative; width: 100%; padding-bottom: 56.25%; /* 16:9 */ }
+        .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
+    </style>
+</head>
+<body class="bg-gray-50 text-brand-blue">
+
+    <!-- Header & Navigation -->
+    <nav id="navbar" class="bg-white/80 backdrop-blur-md shadow fixed w-full z-50 transition-all duration-300">
+        <div class="container mx-auto px-4 sm:px-6 py-4 flex justify-between items-center">
+            <a href="#home" class="block w-40">
+                 <img src="images/rlglogo.png" 
+                      onerror="this.onerror=null; this.src='https://placehold.co/200x60/cccccc/333333?text=Logo+Not+Found';" 
+                      alt="Right Light Gospel Orphanage Logo" class="w-full h-auto">
+            </a>
+            
+            <div class="hidden lg:flex space-x-8 items-center">
+                <a href="#home" class="nav-item font-semibold active">Home</a>
+                <a href="#about" class="nav-item font-semibold">About Us</a>
+                <a href="#impact" class="nav-item font-semibold">Our Impact</a>
+                <a href="#stories" class="nav-item font-semibold">Stories</a>
+                <a href="#contact" class="nav-item font-semibold">Contact</a>
+                <a href="gallery.html" class="nav-item font-semibold">Gallery</a>
+            </div>
+            
+            <div class="hidden lg:flex items-center">
+                <a href="donate.html" class="bg-brand-gold hover:bg-brand-gold-dark text-brand-blue font-bold py-2 px-6 rounded-full transition duration-300 ease-in-out transform hover:scale-105 inline-block text-center" aria-label="Donate Now">
+                    Donate Now
+                </a>
+            </div>
+            
+            <div class="lg:hidden">
+                <button id="mobile-menu-button" aria-label="Open mobile menu" class="focus:outline-none">
+                    <i data-feather="menu" class="w-7 h-7"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="fixed top-0 right-0 h-full w-full bg-white z-[60] transform translate-x-full transition-transform duration-300 ease-in-out lg:hidden">
+        <div class="flex justify-end p-6">
+             <button id="mobile-menu-close-button" aria-label="Close mobile menu" class="focus:outline-none">
+                <i data-feather="x" class="w-8 h-8"></i>
+            </button>
+        </div>
+            <div class="flex flex-col items-center justify-center h-full -mt-16 space-y-6">
+            <a href="#home" class="mobile-nav-item text-2xl font-semibold">Home</a>
+            <a href="#about" class="mobile-nav-item text-2xl font-semibold">About Us</a>
+            <a href="#impact" class="mobile-nav-item text-2xl font-semibold">Our Impact</a>
+            <a href="#stories" class="mobile-nav-item text-2xl font-semibold">Stories</a>
+            <a href="#contact" class="mobile-nav-item text-2xl font-semibold">Contact</a>
+            <a href="gallery.html" class="mobile-nav-item text-2xl font-semibold">Gallery</a>
+                <a href="donate.html" aria-label="Donate Now" class="mt-8 bg-brand-gold hover:bg-brand-gold-dark text-brand-blue font-bold py-3 px-8 rounded-full transition duration-300 text-lg inline-block text-center">
+                    Donate Now
+                </a>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section id="home" class="relative overflow-hidden">
+        <div class="hero-slider-container h-[90vh]">
+             <div class="hero-slide active h-full" style="background-image: url('images/r1.jpg');">
+                <div class="slide-content absolute inset-0 bg-black bg-opacity-60 flex flex-col justify-center items-center text-center text-white p-8">
+                    <h1 class="text-4xl md:text-6xl font-extrabold mb-4">Nurturing Hope, Building Futures</h1>
+                    <p class="text-lg md:text-xl mb-8 max-w-3xl font-light">We are a beacon of hope, providing a loving home, education, and care for orphaned and vulnerable children in Nigeria.</p>
+                    <a href="#about" class="bg-brand-gold text-brand-blue hover:bg-brand-gold-dark font-bold py-4 px-10 rounded-full text-lg transition duration-300 transform hover:scale-105 shadow-lg">Learn More</a>
+                </div>
+            </div>
+            <div class="hero-slide h-full" style="background-image: url('images/r2.jpg');">
+                <div class="slide-content absolute inset-0 bg-black bg-opacity-60 flex flex-col justify-center items-center text-center text-white p-8">
+                    <h1 class="text-4xl md:text-6xl font-extrabold mb-4">Your Support Creates Brighter Days</h1>
+                    <p class="text-lg md:text-xl mb-8 max-w-3xl font-light">Every donation, every act of kindness, helps us provide the safe and joyful childhood every child deserves.</p>
+                    <a href="donate.html" aria-label="Make a Difference" class="bg-brand-gold text-brand-blue hover:bg-brand-gold-dark font-bold py-4 px-10 rounded-full text-lg transition duration-300 transform hover:scale-105 shadow-lg inline-block text-center">Make a Difference</a>
+                </div>
+            </div>
+        </div>
+        <button id="prevSlide" class="absolute top-1/2 left-4 transform -translate-y-1/2 bg-black bg-opacity-30 hover:bg-opacity-60 text-white p-3 rounded-full focus:outline-none z-10 transition duration-300">&#10094;</button>
+        <button id="nextSlide" class="absolute top-1/2 right-4 transform -translate-y-1/2 bg-black bg-opacity-30 hover:bg-opacity-60 text-white p-3 rounded-full focus:outline-none z-10 transition duration-300">&#10095;</button>
+        <div id="sliderDots" class="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-3 z-10"></div>
+    </section>
+
+    <!-- About Us Section -->
+    <section id="about" class="py-20 md:py-32 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row items-center gap-12 md:gap-20">
+                <div class="md:w-1/2 reveal">
+                    <img src="images/r3.jpg" alt="Group photo of children at the orphanage" class="rounded-2xl shadow-2xl w-full h-full object-cover">
+                </div>
+                <div class="md:w-1/2 reveal">
+                    <span class="text-brand-gold font-semibold">WHO WE ARE</span>
+                    <h2 class="text-3xl md:text-4xl font-bold mt-2 mb-6">Right Light Gospel Orphanage</h2>
+                    <p class="text-gray-600 mb-4 leading-relaxed">
+                        We are a non-profit organization dedicated to providing a loving, stable, and nurturing family environment for orphaned and vulnerable children in Nigeria. Our mission is to empower each child to overcome their circumstances and build a future filled with promise.
+                    </p>
+                    <p class="text-gray-600 mb-8 leading-relaxed">
+                        Through comprehensive care that includes education, healthcare, and emotional support, we light up the path for our children to become confident, compassionate, and resilient individuals.
+                    </p>
+                    <a href="#contact" class="bg-brand-blue hover:bg-black text-white font-semibold py-3 px-8 rounded-full transition duration-300 transform hover:scale-105 inline-block text-base shadow-lg">
+                        Connect With Us
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Our Impact Section -->
+    <section id="impact" class="py-20 md:py-32 bg-gray-100">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16 reveal">
+                <span class="text-brand-gold font-semibold">WHAT YOUR SUPPORT DOES</span>
+                <h2 class="text-3xl md:text-4xl font-bold mt-2">Your Contribution in Action</h2>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="impact-card reveal bg-white p-8 rounded-2xl shadow-lg">
+                    <div class="icon-container bg-yellow-100 text-brand-gold rounded-full p-4 w-16 h-16 mb-6 flex items-center justify-center">
+                        <i data-feather="home" class="w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Safe Shelter</h3>
+                    <p class="text-gray-600 text-sm leading-relaxed">We provide a secure and loving home where children feel safe, valued, and part of a family.</p>
+                </div>
+                <div class="impact-card reveal bg-white p-8 rounded-2xl shadow-lg" style="transition-delay: 150ms;">
+                    <div class="icon-container bg-yellow-100 text-brand-gold rounded-full p-4 w-16 h-16 mb-6 flex items-center justify-center">
+                       <i data-feather="book-open" class="w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Quality Education</h3>
+                    <p class="text-gray-600 text-sm leading-relaxed">Every child receives an education, giving them the tools to build a self-sufficient future.</p>
+                </div>
+                <div class="impact-card reveal bg-white p-8 rounded-2xl shadow-lg" style="transition-delay: 300ms;">
+                    <div class="icon-container bg-yellow-100 text-brand-gold rounded-full p-4 w-16 h-16 mb-6 flex items-center justify-center">
+                        <i data-feather="heart" class="w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Healthcare & Nutrition</h3>
+                    <p class="text-gray-600 text-sm leading-relaxed">We ensure our children are healthy and well-nourished, with access to medical care and balanced meals.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stories of Hope Section -->
+    <section id="stories" class="py-20 md:py-32 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16 reveal">
+                <span class="text-brand-gold font-semibold">OUR STORIES</span>
+                <h2 class="text-3xl md:text-4xl font-bold mt-2">Stories of Hope & Transformation</h2>
+                <p class="text-gray-600 mt-4 max-w-2xl mx-auto">These are the lives you are helping to change every day. (Names and identifying details have been changed for privacy).</p>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="story-card reveal bg-gray-50 rounded-2xl shadow-lg overflow-hidden">
+                    <div class="h-60 overflow-hidden">
+                        <img src="images/img1.jpg" alt="Child studying" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-8">
+                        <h3 class="text-xl font-bold mb-3">Godgift Sunday – The Brave Dreamer</h3>
+                        <p class="text-gray-600 text-sm leading-relaxed">"Godgift Sunday is 12 years old, full of energy and courage. With a bright smile and a strong heart, he dreams of becoming a soldier someday — to protect people and keep his country safe.</p>
+                    </div>
+                </div>
+                <div class="story-card reveal bg-gray-50 rounded-2xl shadow-lg overflow-hidden" style="transition-delay: 150ms;">
+                    <div class="h-60 overflow-hidden">
+                        <img src="images/img2.jpg" alt="Child painting" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-8">
+                        <h3 class="text-xl font-bold mb-3">Joy Ishaku – The Future Nurse with a Big Heart</h3>
+                        <p class="text-gray-600 text-sm leading-relaxed">"At just 11 years old, Joy Ishaku already carries a heart full of compassion. She dreams of becoming a nurse one day so she can help people and bring smiles to those who are hurting. Joy is gentle, kind, and always ready to care for others</p>
+                    </div>
+                </div>
+                <div class="story-card reveal bg-gray-50 rounded-2xl shadow-lg overflow-hidden" style="transition-delay: 300ms;">
+                    <div class="h-60 overflow-hidden">
+                        <img src="images/img3.jpg" alt="Child smiling" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-8">
+                        <h3 class="text-xl font-bold mb-3">Gospel Pepps – The Little Musician with a Big Mission</h3>
+                        <p class="text-gray-600 text-sm leading-relaxed">"At just 10 years old, whether he’s practicing on the keyboard or humming a new tune, Gospel believes that music can touch hearts, lift spirits, and glorify God. His passion reminds us that even the smallest voices can create the greatest harmony of love and light.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Get Involved CTA Section -->
+    <section id="get-involved" class="py-20 md:py-32 bg-brand-blue text-white bg-cover bg-center" style="background-image: linear-gradient(rgba(31, 51, 66, 0.9), rgba(31, 51, 66, 0.9)), url('r4.jpg');">
+        <div class="container mx-auto px-6 text-center reveal">
+            <i data-feather="users" class="w-16 h-16 mx-auto mb-6 text-brand-gold"></i>
+            <h2 class="text-3xl md:text-4xl font-bold mb-6">Become a Part of Our Story</h2>
+            <p class="text-lg md:text-xl mb-10 max-w-2xl mx-auto text-gray-300">
+                Whether through donations, volunteering your time, or corporate partnerships, your support is vital. Join us in creating a world where every child has the chance to shine.
+            </p>
+            <a href="donate.html" aria-label="Donate Today" class="bg-brand-gold hover:bg-brand-gold-dark text-brand-blue font-bold py-4 px-10 rounded-full text-lg transition duration-300 transform hover:scale-105 inline-block shadow-lg text-center">
+                Donate Today
+            </a>
+        </div>
+    </section>
+
+    <!-- Video Section (short video about the orphanage) -->
+    <section id="video" class="py-20 md:py-32 bg-white">
+        <div class="container mx-auto px-6 reveal">
+            <div class="text-center mb-8">
+                <span class="text-brand-gold font-semibold">OUR STORY</span>
+                <h2 class="text-3xl md:text-4xl font-bold mt-2">A Story of Hope and Dreams</h2>
+            </div>
+            <div class="max-w-4xl mx-auto">
+                <div class="video-wrapper rounded-2xl overflow-hidden shadow-lg">
+                    <iframe src="https://www.youtube.com/embed/V1aBP28YkSU" title="Right Light Gospel Orphanage Video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="py-20 md:py-32 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16 reveal">
+                <span class="text-brand-gold font-semibold">WORDS FROM SUPPORTERS</span>
+                <h2 class="text-3xl md:text-4xl font-bold mt-2">Why They Support Our Mission</h2>
+            </div>
+            <div class="relative max-w-3xl mx-auto reveal">
+                <div class="testimonial-slider-container">
+                    <div class="testimonial-slide active text-center">
+                        <img src="https://placehold.co/100x100/cccccc/ffffff?text=Donor" alt="Donor photo" class="w-24 h-24 rounded-full mx-auto mb-6 shadow-lg">
+                        <p class="text-lg md:text-xl text-gray-700 italic mb-6">"Seeing the direct impact of my donation on the children's lives is incredibly rewarding. Right Light is transparent, compassionate, and truly making a difference. I'm proud to be a monthly supporter."</p>
+                        <h4 class="font-bold">Mrs. Funke Adebayo</h4>
+                        <p class="text-sm text-gray-500">Monthly Donor</p>
+                    </div>
+                    <div class="testimonial-slide text-center">
+                        <img src="https://placehold.co/100x100/cccccc/ffffff?text=Volunteer" alt="Volunteer photo" class="w-24 h-24 rounded-full mx-auto mb-6 shadow-lg">
+                         <p class="text-lg md:text-xl text-gray-700 italic mb-6">"Volunteering at Right Light has been a life-changing experience. The joy and resilience of the children are inspiring. The staff works tirelessly, and it feels like one big, happy family."</p>
+                        <h4 class="font-bold">Chinedu Okoro</h4>
+                        <p class="text-sm text-gray-500">Volunteer Tutor</p>
+                    </div>
+                </div>
+                <button id="prevTestimonial" class="absolute top-1/2 -left-4 md:-left-12 transform -translate-y-1/2 bg-white hover:bg-gray-100 text-gray-600 p-3 rounded-full focus:outline-none z-10 transition duration-300 shadow-md">&#10094;</button>
+                <button id="nextTestimonial" class="absolute top-1/2 -right-4 md:-right-12 transform -translate-y-1/2 bg-white hover:bg-gray-100 text-gray-600 p-3 rounded-full focus:outline-none z-10 transition duration-300 shadow-md">&#10095;</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="py-20 md:py-32 bg-gray-100">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16 reveal">
+                <span class="text-brand-gold font-semibold">HAVE QUESTIONS?</span>
+                <h2 class="text-3xl md:text-4xl font-bold mt-2">Frequently Asked Questions</h2>
+                <p class="text-gray-600 mt-4 max-w-2xl mx-auto">Find answers to common questions about our work, donations, and how you can get involved.</p>
+            </div>
+            <div class="max-w-3xl mx-auto space-y-4">
+                <!-- FAQ Item 1 -->
+                <div class="faq-item reveal bg-white rounded-2xl shadow-md overflow-hidden">
+                    <button class="faq-question w-full flex justify-between items-center text-left p-6">
+                        <span class="font-bold text-lg">How is my donation used?</span>
+                        <i data-feather="plus" class="faq-icon w-6 h-6 text-brand-gold flex-shrink-0"></i>
+                    </button>
+                    <div class="faq-answer px-6 text-gray-600 leading-relaxed">
+                        Your donation directly supports the children's well-being. Approximately 85% goes to direct care programs including food, education, healthcare, and clothing. The remaining 15% covers essential administrative and operational costs to keep our home running safely and efficiently.
+                    </div>
+                </div>
+                <!-- FAQ Item 2 -->
+                <div class="faq-item reveal bg-white rounded-2xl shadow-md overflow-hidden">
+                    <button class="faq-question w-full flex justify-between items-center text-left p-6">
+                        <span class="font-bold text-lg">Is Right Light Gospel Orphanage a registered organization?</span>
+                        <i data-feather="plus" class="faq-icon w-6 h-6 text-brand-gold flex-shrink-0"></i>
+                    </button>
+                    <div class="faq-answer px-6 text-gray-600 leading-relaxed">
+                        Yes, we are fully registered with the Corporate Affairs Commission (CAC) in Nigeria and comply with all regulations set by the Ministry of Women Affairs and Social Development. Our commitment to transparency and accountability is paramount.
+                    </div>
+                </div>
+                <!-- FAQ Item 3 -->
+                <div class="faq-item reveal bg-white rounded-2xl shadow-md overflow-hidden">
+                    <button class="faq-question w-full flex justify-between items-center text-left p-6">
+                        <span class="font-bold text-lg">Can I donate items like clothes, food, or books?</span>
+                        <i data-feather="plus" class="faq-icon w-6 h-6 text-brand-gold flex-shrink-0"></i>
+                    </button>
+                    <div class="faq-answer px-6 text-gray-600 leading-relaxed">
+                        Absolutely! We welcome in-kind donations. Items that are most needed include non-perishable food items, children's clothing (new or gently used), educational toys, and school supplies. Please call us or use the contact form to arrange a drop-off time.
+                    </div>
+                </div>
+                <!-- FAQ Item 4 -->
+                <div class="faq-item reveal bg-white rounded-2xl shadow-md overflow-hidden">
+                    <button class="faq-question w-full flex justify-between items-center text-left p-6">
+                        <span class="font-bold text-lg">How can I volunteer my time?</span>
+                        <i data-feather="plus" class="faq-icon w-6 h-6 text-brand-gold flex-shrink-0"></i>
+                    </button>
+                    <div class="faq-answer px-6 text-gray-600 leading-relaxed">
+                        We are grateful for our volunteers! The process involves filling out an application form, a background check for the safety of our children, and an orientation session. We have roles for tutoring, mentorship, organizing activities, and more. Please visit our contact page to express your interest.
+                    </div>
+                </div>
+                <!-- FAQ Item 5 -->
+                <div class="faq-item reveal bg-white rounded-2xl shadow-md overflow-hidden">
+                    <button class="faq-question w-full flex justify-between items-center text-left p-6">
+                        <span class="font-bold text-lg">Can I visit the orphanage?</span>
+                        <i data-feather="plus" class="faq-icon w-6 h-6 text-brand-gold flex-shrink-0"></i>
+                    </button>
+                    <div class="faq-answer px-6 text-gray-600 leading-relaxed">
+                        To protect the privacy and routine of our children, we encourage scheduled visits. Please contact us in advance to arrange a suitable time. This ensures we can host you properly without disrupting the children's daily activities and education.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 md:py-32 bg-white">
+        <div class="container mx-auto px-6 reveal">
+            <div class="text-center mb-12">
+                <span class="text-brand-gold font-semibold">GET IN TOUCH</span>
+                <h2 class="text-3xl md:text-4xl font-bold mt-2">We'd Love to Hear From You</h2>
+                <p class="text-gray-600 mt-4 max-w-2xl mx-auto">For inquiries about donations, volunteering, or visiting, please don't hesitate to reach out. We're here to help.</p>
+            </div>
+             <div class="max-w-4xl mx-auto grid md:grid-cols-3 gap-8 text-center">
+                <div class="bg-gray-50 p-8 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300">
+                    <i data-feather="map-pin" class="w-10 h-10 mx-auto text-brand-gold mb-4"></i>
+                    <h3 class="font-bold text-lg mb-2">Our Home</h3>
+                    <p class="text-gray-600 text-sm">opposite Delifresh ventures, Gongola, FCT, Abuja</p>
+                </div>
+                 <div class="bg-gray-50 p-8 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300">
+                    <i data-feather="mail" class="w-10 h-10 mx-auto text-brand-gold mb-4"></i>
+                    <h3 class="font-bold text-lg mb-2">Email Us</h3>
+                    <a href="mailto:rightlightgospelorphanagehome@gmail.com" class="text-gray-600 text-sm hover:text-brand-gold">rightlightgospel orphanagehome@gmail.com</a>
+                </div>
+                 <div class="bg-gray-50 p-8 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300">
+                    <i data-feather="phone-call" class="w-10 h-10 mx-auto text-brand-gold mb-4"></i>
+                    <h3 class="font-bold text-lg mb-2">Call Us</h3>
+                    <a href="tel:+2348001234567" class="text-gray-600 text-sm hover:text-brand-gold block">+234 806 418 2675</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="bg-brand-blue text-gray-200 py-16"> 
+        <div class="container mx-auto px-6">
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-10 mb-10 text-center md:text-left">
+                <div>
+                    <h5 class="text-xl font-bold text-white mb-4">Right Light Gospel Orphanage</h5>
+                    <p class="text-sm mb-4">Lighting the way to a brighter future for every child.</p>
+                     <div class="flex space-x-4 justify-center md:justify-start">
+                        <a href="#" aria-label="Facebook" class="text-brand-gold hover:opacity-80 transition duration-300"><i data-feather="facebook" class="w-5 h-5"></i></a>
+                        <a href="#" aria-label="Instagram" class="text-brand-gold hover:opacity-80 transition duration-300"><i data-feather="instagram" class="w-5 h-5"></i></a>
+                    </div>
+                </div>
+                <div>
+                    <h5 class="text-lg font-semibold text-white mb-4">Quick Links</h5>
+                    <ul class="space-y-3 text-sm">
+                        <li><a href="#home" class="hover:text-brand-gold transition duration-300">Home</a></li>
+                        <li><a href="#about" class="hover:text-brand-gold transition duration-300">About Us</a></li>
+                        <li><a href="#stories" class="hover:text-brand-gold transition duration-300">Stories</a></li>
+                        <li><a href="#faq" class="hover:text-brand-gold transition duration-300">FAQ</a></li>
+                        <li><a href="#contact" class="hover:text-brand-gold transition duration-300">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 class="text-lg font-semibold text-white mb-4">Get Involved</h5>
+                    <ul class="space-y-3 text-sm">
+                        <li><a href="donate.html" class="hover:text-brand-gold transition duration-300">Donate</a></li>
+                        <li><a href="#contact" class="hover:text-brand-gold transition duration-300">Volunteer</a></li>
+                        <li><a href="#contact" class="hover:text-brand-gold transition duration-300">Partnerships</a></li>
+                    </ul>
+                </div>
+                 <div>
+                    <h5 class="text-lg font-semibold text-white mb-4">Our Location</h5>
+                     <ul class="space-y-3 text-sm">
+                        <li class="flex items-start justify-center md:justify-start"><i data-feather="map-pin" class="w-4 h-4 mr-2 mt-1 flex-shrink-0 text-brand-gold"></i><span>opposite Delifresh ventures, Gongola, FCT, Abuja</span></li>
+                        <li class="flex items-start justify-center md:justify-start"><i data-feather="mail" class="w-4 h-4 mr-2 mt-1 flex-shrink-0 text-brand-gold"></i><a href="mailto:info@rightlightorphanage.org" class="hover:text-brand-gold transition duration-300">rightlightgospel orphanagehome@gmail.com</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-10 border-t border-gray-700 pt-8 text-center text-sm">
+                <p>&copy; <span id="currentYear"></span> Right Light Gospel Orphanage. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating Action Buttons -->
+    <div class="fixed bottom-6 right-6 z-40 space-y-4">
+        <!-- WhatsApp FAB -->
+        <a href="https://wa.me/2348064182675" target="_blank" rel="noopener noreferrer" class="whatsapp-fab bg-brand-green text-white w-16 h-16 rounded-full flex items-center justify-center shadow-lg transform hover:scale-110 transition-transform" aria-label="Chat with us on WhatsApp">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-whatsapp" viewBox="0 0 16 16">
+                <path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z"/>
+            </svg>
+        </a>
+        <!-- Back to Top Button -->
+        <button id="back-to-top" class="back-to-top bg-brand-blue text-white w-14 h-14 rounded-full flex items-center justify-center shadow-lg transform hover:scale-110 transition-transform" aria-label="Back to top">
+            <i data-feather="arrow-up" class="w-7 h-7"></i>
+        </button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            feather.replace();
+
+            // --- Navbar Scroll & Active Link ---
+            const navbar = document.getElementById('navbar');
+            const sections = document.querySelectorAll('section[id]');
+            const navLinks = document.querySelectorAll('.nav-item');
+            
+            const sectionObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const id = entry.target.getAttribute('id');
+                        navLinks.forEach(link => {
+                            link.classList.toggle('active', link.getAttribute('href') === `#${id}`);
+                        });
+                    }
+                });
+            }, { rootMargin: '-40% 0px -60% 0px' });
+
+            sections.forEach(section => sectionObserver.observe(section));
+            window.addEventListener('scroll', () => navbar.classList.toggle('nav-scrolled', window.scrollY > 50));
+            
+            // --- Mobile Menu ---
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenuCloseButton = document.getElementById('mobile-menu-close-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const mobileMenuLinks = document.querySelectorAll('.mobile-nav-item, #open-donation-modal-mobile');
+
+            const openMobileMenu = () => mobileMenu.classList.replace('translate-x-full', 'translate-x-0');
+            const closeMobileMenu = () => mobileMenu.classList.replace('translate-x-0', 'translate-x-full');
+
+            mobileMenuButton.addEventListener('click', openMobileMenu);
+            mobileMenuCloseButton.addEventListener('click', closeMobileMenu);
+            mobileMenuLinks.forEach(link => link.addEventListener('click', () => setTimeout(closeMobileMenu, 100)));
+            
+            // --- Sliders ---
+            function initializeSlider(containerSelector, slideSelector, prevBtnId, nextBtnId, dotsContainerId) {
+                const container = document.querySelector(containerSelector);
+                if (!container) return;
+                const slides = container.querySelectorAll(slideSelector);
+                if (slides.length <= 1) return;
+
+                const prevButton = document.getElementById(prevBtnId);
+                const nextButton = document.getElementById(nextBtnId);
+                const dotsContainer = document.getElementById(dotsContainerId);
+                let currentSlide = 0;
+                let slideInterval;
+
+                function showSlide(index) {
+                    slides.forEach((slide, i) => slide.classList.toggle('active', i === index));
+                    if (dotsContainer) updateDots(index);
+                    currentSlide = index;
+                }
+                function next() { showSlide((currentSlide + 1) % slides.length); }
+                function createDots() {
+                    if (!dotsContainer) return;
+                    dotsContainer.innerHTML = '';
+                    slides.forEach((_, i) => {
+                        const dot = document.createElement('button');
+                        dot.setAttribute('aria-label', `Go to slide ${i + 1}`);
+                        dot.classList.add('w-2.5', 'h-2.5', 'rounded-full', 'bg-white', 'bg-opacity-50', 'transition-all', 'duration-300');
+                        dot.addEventListener('click', () => { showSlide(i); resetInterval(); });
+                        dotsContainer.appendChild(dot);
+                    });
+                }
+                function updateDots(index) {
+                     Array.from(dotsContainer.children).forEach((dot, i) => {
+                        dot.classList.toggle('bg-opacity-100', i === index);
+                        dot.classList.toggle('w-6', i === index);
+                    });
+                }
+                const startInterval = () => slideInterval = setInterval(next, 7000);
+                const resetInterval = () => { clearInterval(slideInterval); startInterval(); };
+
+                if (dotsContainerId) createDots();
+                showSlide(0); 
+                startInterval();
+                if(nextButton) nextButton.addEventListener('click', () => { next(); resetInterval(); });
+                if(prevButton) prevButton.addEventListener('click', () => { 
+                    showSlide((currentSlide - 1 + slides.length) % slides.length);
+                    resetInterval();
+                });
+            }
+            initializeSlider('.hero-slider-container', '.hero-slide', 'prevSlide', 'nextSlide', 'sliderDots');
+            initializeSlider('.testimonial-slider-container', '.testimonial-slide', 'prevTestimonial', 'nextTestimonial', null);
+
+            // --- Scroll Reveal Animations ---
+            const revealElements = document.querySelectorAll('.reveal');
+            const revealObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        revealObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 }); 
+            revealElements.forEach(el => revealObserver.observe(el));
+
+            // --- Donation Modal (safe-handling if modal markup is not present) ---
+            const openModalButtons = document.querySelectorAll('#open-donation-modal-desktop, #open-donation-modal-mobile, #open-donation-modal-hero, #open-donation-modal-cta');
+            const donationModal = document.getElementById('donation-modal');
+            if (donationModal) {
+                const modalContent = donationModal.querySelector('.modal-content');
+                const closeModalButton = document.getElementById('close-donation-modal');
+                const amountBtns = donationModal.querySelectorAll('.amount-btn');
+                const customAmountInput = donationModal.querySelector('#custom-amount');
+
+                const openModal = () => {
+                    donationModal.style.display = 'flex';
+                    setTimeout(() => {
+                        donationModal.style.opacity = '1';
+                        if (modalContent) modalContent.style.transform = 'scale(1)';
+                    }, 10);
+                };
+                const closeModal = () => {
+                    if (modalContent) modalContent.style.transform = 'scale(0.95)';
+                    donationModal.style.opacity = '0';
+                    setTimeout(() => { donationModal.style.display = 'none'; }, 300);
+                };
+
+                openModalButtons.forEach(btn => btn.addEventListener('click', openModal));
+                if (closeModalButton) closeModalButton.addEventListener('click', closeModal);
+                donationModal.addEventListener('click', (e) => { if (e.target === donationModal) closeModal(); });
+
+                if (amountBtns && amountBtns.length) {
+                    amountBtns.forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            amountBtns.forEach(b => b.classList.remove('border-brand-gold'));
+                            btn.classList.add('border-brand-gold');
+                            if (customAmountInput) customAmountInput.value = '';
+                        });
+                    });
+                }
+                if (customAmountInput) {
+                    customAmountInput.addEventListener('input', () => amountBtns.forEach(b => b.classList.remove('border-brand-gold')));
+                }
+            } else {
+                // Fallback: if there's no modal in the markup, route Donate buttons to contact section to avoid JS errors
+                openModalButtons.forEach(btn => btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const contact = document.getElementById('contact');
+                    if (contact) contact.scrollIntoView({ behavior: 'smooth' });
+                }));
+            }
+
+            // --- FAQ Accordion (accessible + keyboard support + dynamic height) ---
+            const faqItems = document.querySelectorAll('.faq-item');
+            faqItems.forEach(item => {
+                const questionBtn = item.querySelector('.faq-question');
+                const answer = item.querySelector('.faq-answer');
+                if (!questionBtn || !answer) return;
+
+                // Initialize ARIA states
+                questionBtn.setAttribute('aria-expanded', 'false');
+                answer.setAttribute('aria-hidden', 'true');
+                answer.style.maxHeight = '0px';
+
+                const open = () => {
+                    const currentlyOpen = document.querySelector('.faq-item.open');
+                    if (currentlyOpen && currentlyOpen !== item) {
+                        const curAns = currentlyOpen.querySelector('.faq-answer');
+                        const curBtn = currentlyOpen.querySelector('.faq-question');
+                        currentlyOpen.classList.remove('open');
+                        if (curAns) { curAns.style.maxHeight = '0px'; curAns.setAttribute('aria-hidden', 'true'); }
+                        if (curBtn) curBtn.setAttribute('aria-expanded', 'false');
+                    }
+                    item.classList.add('open');
+                    answer.style.maxHeight = answer.scrollHeight + 'px';
+                    answer.setAttribute('aria-hidden', 'false');
+                    questionBtn.setAttribute('aria-expanded', 'true');
+                };
+
+                const close = () => {
+                    item.classList.remove('open');
+                    answer.style.maxHeight = '0px';
+                    answer.setAttribute('aria-hidden', 'true');
+                    questionBtn.setAttribute('aria-expanded', 'false');
+                };
+
+                const toggle = () => { if (item.classList.contains('open')) close(); else open(); };
+
+                questionBtn.addEventListener('click', toggle);
+                questionBtn.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
+                });
+            });
+
+            // --- Video lazy-load / play handler ---
+            const playBtn = document.getElementById('playVideoBtn');
+            const orgIframe = document.getElementById('orgVideo');
+            if (playBtn && orgIframe) {
+                playBtn.addEventListener('click', () => {
+                    const ds = orgIframe.dataset && orgIframe.dataset.src ? orgIframe.dataset.src : null;
+                    if (ds && (!orgIframe.getAttribute('src') || orgIframe.getAttribute('src') === '')) {
+                        orgIframe.setAttribute('src', ds + (ds.includes('?') ? '&' : '?') + 'autoplay=1');
+                    } else if (ds) {
+                        // ensure autoplay param present
+                        let cur = orgIframe.getAttribute('src') || ds;
+                        if (!/autoplay=1/.test(cur)) cur = cur + (cur.includes('?') ? '&' : '?') + 'autoplay=1';
+                        orgIframe.setAttribute('src', cur);
+                    }
+                    orgIframe.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                });
+            }
+
+            // --- Back to Top Button ---
+            const backToTopButton = document.getElementById('back-to-top');
+            window.addEventListener('scroll', () => {
+                backToTopButton.classList.toggle('visible', window.scrollY > 400);
+            });
+            backToTopButton.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            // --- Footer Current Year ---
+            document.getElementById('currentYear').textContent = new Date().getFullYear();
+        });
+    </script>
+
+</body>
+</html>

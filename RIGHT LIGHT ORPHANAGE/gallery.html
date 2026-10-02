@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery - Right Light Gospel Orphanage</title>
+
+    <!-- Tailwind CSS & Google Fonts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Feather Icons -->
+    <script src="https://unpkg.com/feather-icons"></script>
+
+    <style>
+        :root {
+            --brand-blue: #1f3342;
+            --brand-gold: #ffd700;
+            --brand-green: #83cd2d;
+            --brand-white: #ffffff;
+            --brand-light-gray: #f7fafc;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--brand-light-gray);
+            color: var(--brand-blue);
+        }
+
+        /* --- Navbar Styling (Consistent with Homepage) --- */
+        .nav-item { position: relative; transition: color 0.3s ease; }
+        .nav-item::after {
+            content: ''; position: absolute; width: 0; height: 2px;
+            bottom: -6px; left: 50%; transform: translateX(-50%);
+            background-color: var(--brand-gold);
+            transition: width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        .nav-item:hover::after, .nav-item.active::after { width: 100%; }
+        .nav-item:hover, .nav-item.active { color: var(--brand-gold); }
+        
+        /* --- Gallery Specific Styles --- */
+        .gallery-item {
+            transition: opacity 0.5s ease-in-out, transform 0.3s ease;
+        }
+        .gallery-item.hidden {
+            transform: scale(0.8);
+            opacity: 0;
+            width: 0;
+            height: 0;
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+        }
+        .gallery-img-wrapper {
+            transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), box-shadow 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+        .gallery-img-wrapper:hover {
+            transform: translateY(-8px) scale(1.03);
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+        }
+        .gallery-img-wrapper .overlay {
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .gallery-img-wrapper:hover .overlay {
+            opacity: 1;
+        }
+
+        /* --- Lightbox Modal --- */
+        #lightbox {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        #lightbox.active {
+            display: flex;
+            opacity: 1;
+        }
+        #lightbox-img {
+            max-width: 90vw;
+            max-height: 80vh;
+            animation: fadeIn 0.5s;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        
+        /* --- Filter Button Styling --- */
+        .filter-btn {
+            transition: background-color 0.3s, color 0.3s, transform 0.3s;
+        }
+        .filter-btn.active {
+            background-color: var(--brand-blue);
+            color: var(--brand-white);
+            transform: translateY(-2px);
+        }
+
+        /* --- Color Helpers --- */
+        .text-brand-gold { color: var(--brand-gold); }
+        .bg-brand-gold { background-color: var(--brand-gold); }
+        .hover\:bg-brand-gold-dark:hover { background-color: #e6c300; }
+        .bg-brand-blue { background-color: var(--brand-blue); }
+    </style>
+</head>
+<body>
+
+    <!-- Header & Navigation -->
+    <nav id="navbar" class="bg-white/80 backdrop-blur-md shadow-md sticky top-0 w-full z-50">
+        <div class="container mx-auto px-4 sm:px-6 py-4 flex justify-between items-center">
+            <a href="index.html" class="block w-40">
+                 <img src="images/rlglogo.png" 
+                      onerror="this.onerror=null; this.src='https://placehold.co/200x60/cccccc/333333?text=Logo+Not+Found';" 
+                      alt="Right Light Gospel Orphanage Logo" class="w-full h-auto">
+            </a>
+            
+            <div class="hidden lg:flex space-x-8 items-center">
+                <a href="index.html#home" class="nav-item font-semibold">Home</a>
+                <a href="index.html#about" class="nav-item font-semibold">About Us</a>
+                <a href="index.html#stories" class="nav-item font-semibold">Stories</a>
+                <a href="gallery.html" class="nav-item font-semibold active">Gallery</a>
+                <a href="index.html#contact" class="nav-item font-semibold">Contact</a>
+            </div>
+
+            <div class="hidden lg:flex items-center">
+                <a href="donate.html" class="bg-brand-gold hover:bg-brand-gold-dark text-brand-blue font-bold py-2 px-6 rounded-full transition duration-300 ease-in-out transform hover:scale-105">
+                    Donate Now
+                </a>
+            </div>
+            
+            <div class="lg:hidden">
+                <button id="mobile-menu-button" aria-label="Open mobile menu" class="focus:outline-none">
+                    <i data-feather="menu" class="w-7 h-7"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="fixed top-0 right-0 h-full w-full bg-white z-[60] transform translate-x-full transition-transform duration-300 ease-in-out lg:hidden">
+        <div class="flex justify-end p-6">
+             <button id="mobile-menu-close-button" aria-label="Close mobile menu" class="focus:outline-none">
+                <i data-feather="x" class="w-8 h-8"></i>
+            </button>
+        </div>
+            <div class="flex flex-col items-center justify-center h-full -mt-16 space-y-6">
+            <a href="index.html#home" class="nav-item font-semibold">Home</a>
+                <a href="index.html#about" class="nav-item font-semibold">About Us</a>
+                <a href="index.html#stories" class="nav-item font-semibold">Stories</a>
+                <a href="gallery.html" class="nav-item font-semibold active">Gallery</a>
+                <a href="index.html#contact" class="nav-item font-semibold">Contact</a>
+                <a href="donate.html" aria-label="Donate Now" class="mt-8 bg-brand-gold hover:bg-brand-gold-dark text-brand-blue font-bold py-3 px-8 rounded-full transition duration-300 text-lg inline-block text-center">
+                    Donate Now
+                </a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="py-20 md:py-32">
+        <div class="container mx-auto px-6">
+            <!-- Page Header -->
+            <div class="text-center mb-16">
+                <span class="text-brand-gold font-semibold">OUR GALLERY</span>
+                <h1 class="text-4xl md:text-5xl font-extrabold mt-2">A Glimpse Into Our World</h1>
+                <p class="text-gray-600 mt-4 max-w-2xl mx-auto">Explore moments of joy, learning, and community that define life at Right Light Gospel Orphanage. Every picture tells a story of hope you help write.</p>
+            </div>
+
+            <!-- Filter Buttons -->
+            <div id="filter-container" class="flex flex-wrap justify-center gap-3 mb-12">
+                <button class="filter-btn active bg-white shadow-md text-brand-blue font-semibold py-2 px-6 rounded-full" data-filter="all">All</button>
+                <button class="filter-btn bg-white shadow-md text-brand-blue font-semibold py-2 px-6 rounded-full" data-filter="home">Our Home</button>
+                <button class="filter-btn bg-white shadow-md text-brand-blue font-semibold py-2 px-6 rounded-full" data-filter="activities">Activities</button>
+                <button class="filter-btn bg-white shadow-md text-brand-blue font-semibold py-2 px-6 rounded-full" data-filter="education">Education</button>
+                <button class="filter-btn bg-white shadow-md text-brand-blue font-semibold py-2 px-6 rounded-full" data-filter="celebrations">Celebrations</button>
+            </div>
+
+            <!-- Image Grid -->
+            <div id="gallery-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <!-- Image 1 -->
+                <div class="gallery-item" data-category="home">
+                    <div class="gallery-img-wrapper cursor-pointer bg-white rounded-lg shadow-lg overflow-hidden block">
+                        <div class="relative">
+                            <img src="images/ent2.jpg" alt="Entrance to the orphanage" class="w-full h-full object-cover">
+                            <div class="overlay absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+                                <i data-feather="maximize-2" class="w-10 h-10 text-white"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Image 2 -->
+                <div class="gallery-item" data-category="activities">
+                    <div class="gallery-img-wrapper cursor-pointer bg-white rounded-lg shadow-lg overflow-hidden block">
+                        <div class="relative">
+                            <img src="images/r4.jpg" alt="Children playing football" class="w-full h-full object-cover">
+                            <div class="overlay absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+                                <i data-feather="maximize-2" class="w-10 h-10 text-white"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Image 3 -->
+                <div class="gallery-item" data-category="activities">
+                    <div class="gallery-img-wrapper cursor-pointer bg-white rounded-lg shadow-lg overflow-hidden block">
+                        <div class="relative">
+                            <img src="images/m7.jpg" alt="Children in a classroom" class="w-full h-full object-cover">
+                            <div class="overlay absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+                                <i data-feather="maximize-2" class="w-10 h-10 text-white"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="gallery-item" data-category="celebrations">
+                    <div class="gallery-img-wrapper cursor-pointer bg-white rounded-lg shadow-lg overflow-hidden block">
+                        <div class="relative">
+                            <img src="images/m5.jpg" alt="Birthday celebration" class="w-full h-full object-cover">
+                            <div class="overlay absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+                                <i data-feather="maximize-2" class="w-10 h-10 text-white"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="gallery-item" data-category="celebrations">
+                    <div class="gallery-img-wrapper cursor-pointer bg-white rounded-lg shadow-lg overflow-hidden block">
+                        <div class="relative">
+                            <img src="images/m6.jpg" alt="Birthday celebration" class="w-full h-full object-cover">
+                            <div class="overlay absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+                                <i data-feather="maximize-2" class="w-10 h-10 text-white"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="gallery-item" data-category="celebrations">
+                    <div class="gallery-img-wrapper cursor-pointer bg-white rounded-lg shadow-lg overflow-hidden block">
+                        <div class="relative">
+                            <img src="images/m4.jpg" alt="Birthday celebration" class="w-full h-full object-cover">
+                            <div class="overlay absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+                                <i data-feather="maximize-2" class="w-10 h-10 text-white"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="gallery-item" data-category="activities">
+                    <div class="gallery-img-wrapper cursor-pointer bg-white rounded-lg shadow-lg overflow-hidden block">
+                        <div class="relative">
+                            <img src="images/m3.jpg" alt="Children playing football" class="w-full h-full object-cover">
+                            <div class="overlay absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+                                <i data-feather="maximize-2" class="w-10 h-10 text-white"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Image 5 -->
+                <div class="gallery-item" data-category="home">
+                    <div class="gallery-img-wrapper cursor-pointer bg-white rounded-lg shadow-lg overflow-hidden block">
+                        <div class="relative">
+                            <img src="https://placehold.co/400x400/38bdf8/ffffff?text=Dormitory" alt="A clean dormitory room" class="w-full h-full object-cover">
+                            <div class="overlay absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+                                <i data-feather="maximize-2" class="w-10 h-10 text-white"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Image 6 -->
+                <div class="gallery-item" data-category="education">
+                    <div class="gallery-img-wrapper cursor-pointer bg-white rounded-lg shadow-lg overflow-hidden block">
+                        <div class="relative">
+                            <img src="https://placehold.co/400x400/fb923c/ffffff?text=Library" alt="Children reading in the library" class="w-full h-full object-cover">
+                            <div class="overlay absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+                                <i data-feather="maximize-2" class="w-10 h-10 text-white"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Image 7 -->
+                <div class="gallery-item" data-category="activities">
+                    <div class="gallery-img-wrapper cursor-pointer bg-white rounded-lg shadow-lg overflow-hidden block">
+                        <div class="relative">
+                            <img src="images/r2.jpg" alt="Children gardening" class="w-full h-full object-cover">
+                            <div class="overlay absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+                                <i data-feather="maximize-2" class="w-10 h-10 text-white"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Image 8 -->
+                <div class="gallery-item" data-category="activities">
+                    <div class="gallery-img-wrapper cursor-pointer bg-white rounded-lg shadow-lg overflow-hidden block">
+                        <div class="relative">
+                            <img src="images/r1.jpg" alt="activities" class="w-full h-full object-cover">
+                            <div class="overlay absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+                                <i data-feather="maximize-2" class="w-10 h-10 text-white"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-brand-blue text-gray-200 py-16"> 
+        <div class="container mx-auto px-6">
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-10 mb-10 text-center md:text-left">
+                <div>
+                    <h5 class="text-xl font-bold text-white mb-4">Right Light Gospel Orphanage</h5>
+                    <p class="text-sm mb-4">Lighting the way to a brighter future for every child.</p>
+                     <div class="flex space-x-4 justify-center md:justify-start">
+                        <a href="#" aria-label="Facebook" class="text-brand-gold hover:opacity-80 transition duration-300"><i data-feather="facebook" class="w-5 h-5"></i></a>
+                        <a href="#" aria-label="Instagram" class="text-brand-gold hover:opacity-80 transition duration-300"><i data-feather="instagram" class="w-5 h-5"></i></a>
+                    </div>
+                </div>
+                <div>
+                    <h5 class="text-lg font-semibold text-white mb-4">Quick Links</h5>
+                    <ul class="space-y-3 text-sm">
+                        <li><a href="index.html#home" class="hover:text-brand-gold transition duration-300">Home</a></li>
+                        <li><a href="index.html#about" class="hover:text-brand-gold transition duration-300">About Us</a></li>
+                        <li><a href="index.html#stories" class="hover:text-brand-gold transition duration-300">Stories</a></li>
+                        <li><a href="index.html#faq" class="hover:text-brand-gold transition duration-300">FAQ</a></li>
+                        <li><a href="index.html#contact" class="hover:text-brand-gold transition duration-300">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 class="text-lg font-semibold text-white mb-4">Get Involved</h5>
+                    <ul class="space-y-3 text-sm">
+                        <li><a href="index.html#get-involved" class="hover:text-brand-gold transition duration-300">Donate</a></li>
+                        <li><a href="index.html#contact" class="hover:text-brand-gold transition duration-300">Volunteer</a></li>
+                        <li><a href="index.html#contact" class="hover:text-brand-gold transition duration-300">Partnerships</a></li>
+                    </ul>
+                </div>
+                 <div>
+                    <h5 class="text-lg font-semibold text-white mb-4">Our Location</h5>
+                     <ul class="space-y-3 text-sm">
+                        <li class="flex items-start justify-center md:justify-start"><i data-feather="map-pin" class="w-4 h-4 mr-2 mt-1 flex-shrink-0 text-brand-gold"></i><span>123 Hope Avenue, Lagos, Nigeria</span></li>
+                        <li class="flex items-start justify-center md:justify-start"><i data-feather="mail" class="w-4 h-4 mr-2 mt-1 flex-shrink-0 text-brand-gold"></i><a href="mailto:info@rightlightorphanage.org" class="hover:text-brand-gold transition duration-300">info@rightlightorphanage.org</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-10 border-t border-gray-700 pt-8 text-center text-sm">
+                <p>&copy; <span id="currentYear"></span> Right Light Gospel Orphanage. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Lightbox Modal -->
+    <div id="lightbox" class="fixed inset-0 bg-black bg-opacity-80 z-[100] items-center justify-center p-4">
+        <img id="lightbox-img" src="" alt="Lightbox image" class="rounded-lg shadow-2xl">
+        <button id="lightbox-close" class="absolute top-6 right-6 text-white hover:text-brand-gold transition">
+            <i data-feather="x" class="w-10 h-10"></i>
+        </button>
+        <button id="lightbox-prev" class="absolute top-1/2 left-6 transform -translate-y-1/2 text-white hover:text-brand-gold transition">
+            <i data-feather="chevron-left" class="w-12 h-12"></i>
+        </button>
+        <button id="lightbox-next" class="absolute top-1/2 right-6 transform -translate-y-1/2 text-white hover:text-brand-gold transition">
+            <i data-feather="chevron-right" class="w-12 h-12"></i>
+        </button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            feather.replace();
+
+            // --- Gallery Filtering Logic ---
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            const galleryItems = document.querySelectorAll('.gallery-item');
+
+            filterButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Update active button style
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+
+                    const filter = button.dataset.filter;
+
+                    galleryItems.forEach(item => {
+                        if (filter === 'all' || item.dataset.category === filter) {
+                            item.classList.remove('hidden');
+                        } else {
+                            item.classList.add('hidden');
+                        }
+                    });
+                });
+            });
+
+            // --- Mobile Menu ---
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenuCloseButton = document.getElementById('mobile-menu-close-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const mobileMenuLinks = document.querySelectorAll('.mobile-nav-item, #open-donation-modal-mobile');
+
+            const openMobileMenu = () => mobileMenu.classList.replace('translate-x-full', 'translate-x-0');
+            const closeMobileMenu = () => mobileMenu.classList.replace('translate-x-0', 'translate-x-full');
+
+            mobileMenuButton.addEventListener('click', openMobileMenu);
+            mobileMenuCloseButton.addEventListener('click', closeMobileMenu);
+            mobileMenuLinks.forEach(link => link.addEventListener('click', () => setTimeout(closeMobileMenu, 100)));
+
+            // --- Lightbox Logic ---
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            const lightboxClose = document.getElementById('lightbox-close');
+            const lightboxPrev = document.getElementById('lightbox-prev');
+            const lightboxNext = document.getElementById('lightbox-next');
+            let currentImageIndex;
+            let visibleImages = [];
+
+            const updateVisibleImages = () => {
+                visibleImages = Array.from(document.querySelectorAll('.gallery-item:not(.hidden) img'));
+            };
+
+            const openLightbox = (imgElement) => {
+                updateVisibleImages();
+                currentImageIndex = visibleImages.indexOf(imgElement);
+                lightboxImg.src = imgElement.src;
+                lightbox.classList.add('active');
+            };
+
+            const closeLightbox = () => {
+                lightbox.classList.remove('active');
+            };
+            
+            const showPrevImage = () => {
+                currentImageIndex = (currentImageIndex - 1 + visibleImages.length) % visibleImages.length;
+                lightboxImg.src = visibleImages[currentImageIndex].src;
+            };
+
+            const showNextImage = () => {
+                currentImageIndex = (currentImageIndex + 1) % visibleImages.length;
+                lightboxImg.src = visibleImages[currentImageIndex].src;
+            };
+
+            document.querySelectorAll('.gallery-img-wrapper').forEach(wrapper => {
+                wrapper.addEventListener('click', (e) => {
+                    openLightbox(e.currentTarget.querySelector('img'));
+                });
+            });
+
+            lightboxClose.addEventListener('click', closeLightbox);
+            lightbox.addEventListener('click', (e) => {
+                if(e.target === lightbox) closeLightbox();
+            });
+            lightboxPrev.addEventListener('click', showPrevImage);
+            lightboxNext.addEventListener('click', showNextImage);
+
+            // Keyboard navigation for lightbox
+            document.addEventListener('keydown', (e) => {
+                if (lightbox.classList.contains('active')) {
+                    if (e.key === 'Escape') closeLightbox();
+                    if (e.key === 'ArrowLeft') showPrevImage();
+                    if (e.key === 'ArrowRight') showNextImage();
+                }
+            });
+
+            // --- Footer Current Year ---
+            document.getElementById('currentYear').textContent = new Date().getFullYear();
+        });
+    </script>
+
+</body>
+</html>
